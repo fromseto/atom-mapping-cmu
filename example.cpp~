@@ -1,0 +1,71 @@
+#include <iostream>
+//#include "openbabel/obconversion.h"
+//#include "openbabel/mol.h"
+#include <openbabel/obconversion.h>
+#include <openbabel/mol.h>
+#include <openbabel/reaction.h>
+
+using namespace std;
+using namespace OpenBabel;
+int main(int argc,char **argv)
+{
+  
+  //OpenBabel::OBConversion conv;
+  OBConversion conv;
+  //conv.SetInFormat("sdf");
+  conv.SetInFormat("rxn");
+  //OpenBabel::OBMol mol;
+  //OBMol mol;
+  OBReaction rxn;
+  
+  
+  /*
+  bool notatend = conv.ReadFile(&mol, "my_first.sdf");
+  
+  while (notatend){
+    std::cout << "Molecular weight: "<< mol.GetMolWt() << std::endl;
+    mol.Clear();
+    notatend = conv.Read(&mol);
+    }
+   */
+  bool notatend = conv.ReadFile(&rxn, "my_first.rxn");
+  
+  while (notatend){
+    std::cout << "Number of reactants: "<< rxn.NumReactants() << std::endl;
+    std::cout << "Number of reactants: "<< rxn.NumReactants() << std::endl;
+    shared_ptr<OBMol> m = rxn.GetReactant(1);
+    std::cout << "Reactant: "<< m.GetX() << std::endl;
+    rxn.Clear();
+    notatend = conv.Read(&rxn);
+    }
+  return 0;
+        /*if(argc<3)
+	{
+	 cout << "Usage: ProgrameName InputFileName OutputFileName\n";
+	 return 1;
+	}
+	ifstream ifs(argv[1]);
+	if(!ifs)
+	{
+ 	 cout << "Cannot open input file\n";
+	 return 1;
+	}
+	ofstream ofs(argv[2]);
+	if(!ofs)
+	{
+	 cout << "Cannot open output file\n";
+	 return 1;
+	}
+	OpenBabel::OBConversion conv;
+	conv.SetInFormat("sdf");
+	OpenBabel::OBConversion conv(&ifs, &ofs);
+	conv(&ifs, &ofs);
+	if(!conv.SetInAndOutFormats("CML","MOL"))
+	{
+	 cout << "Formats not available\n";
+	 return 1;
+	}
+	int n = conv.Convert();
+	cout << n << " molecules converted\n";
+	return 0;*/
+}

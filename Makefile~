@@ -1,0 +1,5 @@
+# build an executable named readrxn1 from readrxn.cpp
+all: readrxn.cpp
+	g++ -g -Wall -o readrxn1 readrxn1.cpp
+clean:
+	$(RM) readrxn1

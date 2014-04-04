@@ -1,0 +1,185 @@
+#include <iostream>
+#include <vector>
+//#include "openbabel/obconversion.h"
+//#include "openbabel/mol.h"
+#include <openbabel/obconversion.h>
+#include <openbabel/mol.h>
+#include <openbabel/reaction.h>
+
+using namespace std;
+using namespace OpenBabel;
+int main(int argc,char **argv)
+{
+
+  //OpenBabel::OBConversion conv;
+  OBConversion conv;
+  //conv.SetInFormat("sdf");
+  conv.SetInFormat("rxn");
+  //OpenBabel::OBMol mol;
+  //OBMol mol;
+  OBReaction rxn;
+  
+  
+  /*
+  bool notatend = conv.ReadFile(&mol, "my_first.sdf");
+  
+  while (notatend){
+    std::cout << "Molecular weight: "<< mol.GetMolWt() << std::endl;
+    mol.Clear();
+    notatend = conv.Read(&mol);
+    }
+   */
+    bool notatend = conv.ReadFile(&rxn, "my_first.rxn");
+    ofstream myfile ("gams_input_example.txt");
+
+    while (notatend){
+        int num_reactants = rxn.NumReactants();
+        int num_products = rxn.NumProducts();
+        std::cout << "Number of reactants: "<< num_reactants << std::endl;
+        std::cout << "Number of Productss: "<< num_products << std::endl;
+        shared_ptr<OBMol> m = rxn.GetReactant(0);
+        std::cout << "Number of atoms "<< (*m).NumAtoms() << std::endl;
+
+        std::cout << "Formula "<< (*m).GetFormula() << std::endl;
+
+
+        // get information of atoms
+        int num_atoms = (*m).NumAtoms();
+        std::vector<int> rtypes;
+        for (int index = 1; index < num_atoms; index++)
+        {
+            OBAtom atom = *((*m).GetAtom(index));
+            std::cout << "Type of atom "<< *(atom.GetType()) << atom.GetAtomicMass() << std::endl;
+            rtypes.push_back(int(atom.GetAtomicNum()));
+                        
+        }        
+        
+        // get information of bonds
+        int num_bonds = (*m).NumBonds();
+        std::cout << "Number of bonds "<< num_bonds << std::endl;
+        std::vector<int> rbonds;
+        std::vector<int> rdb;
+        
+        for (int index = 1; index < num_bonds; index++)
+        {
+            OBBond bond = *((*m).GetBond(index));
+            std::cout << "bond atom"<< (*(bond.GetBeginAtom())).GetIdx() 
+            << *((*(bond.GetBeginAtom())).GetType()) << " bond atom"
+            << (*(bond.GetEndAtom())).GetIdx() << *((*(bond.GetEndAtom())).GetType())
+            << std::endl;
+
+            // bond connection between two atoms
+            rbonds.push_back((*(bond.GetBeginAtom())).GetIdx());
+            rbonds.push_back((*(bond.GetEndAtom())).GetIdx());
+
+            // double bonds
+            if (bond.IsDouble()) {
+                rdb.push_back((*(bond.GetBeginAtom())).GetIdx());
+                rdb.push_back((*(bond.GetEndAtom())).GetIdx());
+            }
+        }
+        // out put number of atoms
+        myfile << "Set i /a1 * a"<<(*m).NumAtoms()<<"/;\n";
+        myfile << "Alias(i,j,k,l,m,n,o,p);\n";
+
+        // output all atom types
+        myfile << "Parameter rtypes(i) /";
+        if (rtypes.size()>1)
+        {
+            for(vector<int>::size_type ix = 0; ix != rtypes.size(); ix++)
+            {
+                if (ix==rtypes.size() - 1)
+                {
+                    myfile << "a"<< ix+1 <<" "<<rtypes[ix]<<"/;\n";
+                } else {
+                    myfile << "a"<< ix+1 <<" "<<rtypes[ix]<<", ";
+                }   
+            }
+        } else {
+            myfile << "/;\n";
+        }
+
+        // output all bond connection between two atoms for gams file
+        myfile << "Set rbonds(i,j) /";
+        if (rbonds.size()>1)
+        {
+            for(vector<int>::size_type ix = 0; ix != rbonds.size(); ix += 2)
+            {
+                if (ix==rbonds.size() - 2)
+                {
+                    myfile << "a"<<rbonds[ix]<<"."<< "a"<<rbonds[ix+1]<<"/;\n";
+                } else {
+                    myfile << "a"<<rbonds[ix]<<"."<< "a"<<rbonds[ix+1]<<", ";
+                }   
+            }
+        } else {
+            myfile << "/;\n";
+        }
+
+        // output double bonds for gams file
+        myfile << "Set rdb(i,j) /";
+        if (rdb.size()>1)
+        {
+            for(vector<int>::size_type ix = 0; ix != rdb.size(); ix += 2)
+            {
+                if (ix==rdb.size() - 2)
+                {
+                    myfile << "a"<<rdb[ix]<<"."<< "a"<<rdb[ix+1]<<"/;\n";
+                }
+                myfile << "a"<<rdb[ix]<<"."<< "a"<<rdb[ix+1]<<", ";   
+            }
+        } else {
+            myfile << "/;\n";
+        }
+
+        // output double bonds for gams file
+        myfile << "Set rdb(i,j) /";
+        if (rdb.size()>1)
+        {
+            for(vector<int>::size_type ix = 0; ix != rdb.size(); ix += 2)
+            {
+                if (ix==rdb.size() - 2)
+                {
+                    myfile << "a"<<rdb[ix]<<"."<< "a"<<rdb[ix+1]<<"/;\n";
+                }
+                myfile << "a"<<rdb[ix]<<"."<< "a"<<rdb[ix+1]<<", ";   
+            }
+        } else {
+            myfile << "/;\n";
+        }
+        rxn.Clear();
+        notatend = conv.Read(&rxn);
+    }
+
+    myfile.close();
+    return 0;
+        /*if(argc<3)
+    {
+     cout << "Usage: ProgrameName InputFileName OutputFileName\n";
+     return 1;
+    }
+    ifstream ifs(argv[1]);
+    if(!ifs)
+    {
+     cout << "Cannot open input file\n";
+     return 1;
+    }
+    ofstream ofs(argv[2]);
+    if(!ofs)
+    {
+     cout << "Cannot open output file\n";
+     return 1;
+    }
+    OpenBabel::OBConversion conv;
+    conv.SetInFormat("sdf");
+    OpenBabel::OBConversion conv(&ifs, &ofs);
+    conv(&ifs, &ofs);
+    if(!conv.SetInAndOutFormats("CML","MOL"))
+    {
+     cout << "Formats not available\n";
+     return 1;
+    }
+    int n = conv.Convert();
+    cout << n << " molecules converted\n";
+    return 0;*/
+}

@@ -1,0 +1,1 @@
+/usr/bin/c++       CMakeFiles/example.dir/example.cpp.o  -o example  -L/home/linw1/Downloads/openbabel-2.3.2/openbabel-install/lib -rdynamic -lopenbabel -lopenbabel -Wl,-rpath,/home/linw1/Downloads/openbabel-2.3.2/openbabel-install/lib 

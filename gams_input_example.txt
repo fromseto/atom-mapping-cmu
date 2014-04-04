@@ -1,0 +1,26 @@
+Set i /a1 * a16/;
+Alias(i,j,k,l,m,n,o,p);
+Parameter rtypes(i) 'types of atoms'/a1 6, a2 6, a3 6, a4 6, a5 17, a6 1, a7 1, a8 1, a9 1, a10 1, a11 1, a12 1, a13 1, a14 1, a15 8, a16 1/;
+Parameter ptypes(k) 'types of atoms'/a1 6, a2 6, a3 6, a4 6, a5 8, a6 1, a7 1, a8 1, a9 1, a10 1, a11 1, a12 1, a13 1, a14 1, a15 1, a16 17/;
+
+Set rbonds(i,j) 'bonds btween two atoms ' /a1.a2, a1.a6, a1.a7, a1.a8, a2.a3, a2.a9, a2.a10, a3.a4, a3.a5, a3.a11, a4.a12, a4.a13, a4.a14, a15.a16/;
+Set pbonds(k,l) 'bonds btween two atoms' /a1.a2, a1.a6, a1.a7, a1.a8, a2.a3, a2.a9, a2.a10, a3.a4, a3.a5, a3.a11, a4.a12, a4.a13, a4.a14, a5.a15/;
+
+Set adjr /t1 * t4/;
+Alias(adjr,adjp);
+
+Set rtetra(i) 'index of tetra atom' /a1 , a2 , a3 , a4 /;
+Set ptetra(k) 'index of tetra atom' /a1 , a2 , a3 , a4 /;
+
+Parameter rta(i,adjr) 'neighoring atoms of each tetra atoms'/a1.t1 2 , a1.t2 6 , a1.t3 7 , a1.t4 8 , a2.t1 3 , a2.t2 9 , a2.t3 10 , a2.t4 1 , a3.t1 4 , a3.t2 5 , a3.t3 11 , a3.t4 2 , a4.t1 12 , a4.t2 13 , a4.t3 14 , a4.t4 3 /;
+Parameter pta(k,adjp) 'neighoring atoms of each tetra atoms'/a1.t1 2 , a1.t2 6 , a1.t3 7 , a1.t4 8 , a2.t1 3 , a2.t2 9 , a2.t3 10 , a2.t4 1 , a3.t1 4 , a3.t2 5 , a3.t3 11 , a3.t4 2 , a4.t1 12 , a4.t2 13 , a4.t3 14 , a4.t4 3 /;
+
+Parameter rtt(i) 'types of tetra atoms' /a1 6, a2 6, a3 6, a4 6/;
+Parameter ptt(k) 'types of tetra atoms' /a1 6, a2 6, a3 6, a4 6/;
+
+Set rdb(i,j) 'double bonds between two atom index'/ /;
+Set pdb(k,l) 'double bonds between two atom index'/ /;
+
+Parameter rda(i,j,adjr) 'neighoring atoms of double bonds'/ /;
+Parameter pda(k,l,adjp) 'neighoring atoms of double bonds'/ /;
+
